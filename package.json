@@ -1,0 +1,15 @@
+{
+  "name": "simpleServer",
+  "version": "0.0.0",
+  "description": "simple node.js server using only connect and serveStatic",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Vaughan Perry",
+  "license": "BSD-2-Clause",
+  "dependencies": {
+    "connect": "~3.2.0",
+    "serve-static": "~1.7.0"
+  }
+}
