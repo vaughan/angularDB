@@ -1,1 +1,49 @@
-hello world
+<html>
+<head>
+  <script src="components/angularjs/angular.min.js"></script>
+  <LINK REL=StyleSheet HREF="css/style.css" TYPE="text/css" MEDIA=screen>
+  <title>angularDB</title>
+ </head>
+<body ng-app="dbApp" ng-controller="dbController">
+  <div id=dbObjects>
+    <li>
+      <ul ng-repeat="table in tables" ng-click="openTable(table);">{{table}}</ul>
+     </li>
+   </div>
+  <div id=content>
+    <h3>{{tableName}}</h3>
+    <table>
+      <tr>
+        <th ng-repeat="(column, value) in rows[0]">{{column}}</th>
+       </tr>
+      <tr ng-repeat="row in rows">
+         <td ng-repeat="(key, value) in row">{{value}}</td>
+        </tr>
+   </div>
+ </body>
+<script>
+var app = angular.module("dbApp", []);
+app.filter('reverse', function() {
+  return function(items) {
+    return items.slice().reverse();
+  };
+ });
+app.controller("dbController", function($scope, $http) {
+  $scope.openTable = function(table) {
+    $http.get("/table?get=" + table)
+      .success(function(response) {
+        $scope.rows = response.rows;
+        $scope.tableName = response.table;
+       });
+   };
+  $scope.getTables = function() {
+    $http.get("/tables")
+      .success(function(response) {
+        $scope.tables = response;
+       });    
+   };
+  $scope.getTables();
+ });
+</script>
+
+</html>
