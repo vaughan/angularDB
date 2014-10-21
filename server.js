@@ -7,16 +7,6 @@ var dbFilePath = process.argv[2];
 var db = require("./lib/Db");
 db.load(dbFilePath);
 
-var dataVar = [
-  {name: 'bread', foodGroup:'bread & cereal'},
-  {name: 'cookies', foodGroup:'bread & cereal'},
-  {name: 'celery', foodGroup:'fruit & veg'}
- ];
-app.use('/db', function(req,res){
-    res.setHeader('Content-Type', 'application/json');
-    res.end(JSON.stringify(dataVar, null, 3));
-});
-
 var url = require('url');
 app.use('/table', function(req, res){
   var url_parts = url.parse(req.url, true);
@@ -35,6 +25,18 @@ app.use('/table', function(req, res){
       res.end(JSON.stringify(tableData, null, 3));
      }
    );
+ });
+
+app.use('/sql', function(req, res){
+  var sql = url.parse(req.url, true).query['get'];
+  console.log('sql: ' + req.body.sql);
+  /*db.sqlite3_db.run(req.body.sql, [], function(err) {
+    if (err) {
+      console.log('error: ' + err);
+      console.log(' - sql: ' + req.params.sql);
+     }
+    res.json(err);
+   });*/
  });
 
 app.use('/tables', function(req, res) {

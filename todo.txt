@@ -1,0 +1,24 @@
+- sql-repeat
+- ng-grid
+- late-loading?
+- node-webkit
+- testing
+- dbObjects treeview
+- ng-grid editable
+- tab control for multiple simultanious views of dbObjects
+- other types of dbObjects
+- tableDesign view
+
+Q: can I create a directive that contains sql? R:yes!
+  Q: sql.html: why is attr['sql-repeat'] null? how do I get the text value of sql-repeat?
+  Q: sql.html: how can I transform the tr tag the directive is called on into an ng-repeat without messing with the tr's contents?
+     x- template seems to overwrite everything
+     x- the very fact of calling the directive on the tr seems to erase it's contents
+     no: it wasn't over-writing anything the {{}} expressions evaluated to null
+  comment: I find the Angular method API calls to be unclear. ie. the format for API calls that provide dependancy injection such as for 
+    registering controllers, services and directives.  I presume it the allowed arguments are (id, [dependency1, dependency2, ... , function())
+    where id is a string identifier of the service, directive or controller and it is followed by an array the final member of which is the
+    constructor of the service, directive or controller and other 
+  Q: how can implicit references to services infer what they are based on their variable name?  Is it actually possible in javascript to detect the
+    string value of a function paramater in it's definition and not only it's order in the parameter list?
+    R: yes this is possible using the «arguments» : it's just a non-typical way of thinking of function definitions that throws me for a loop   

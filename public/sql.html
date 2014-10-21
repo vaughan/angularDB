@@ -1,0 +1,77 @@
+<body ng-app="sqlApp" ng-controller="sqlController">
+
+  <h1>ng-repeat</h1>
+  <table>
+    <tr>
+      <th>livre</th>
+      <th>chapitre</th>
+      <th>verset</th>
+     </tr>
+    <tr ng-repeat="versetCle in versetsCles">
+      <td>{{versetCle.livre}}</td>
+      <td>{{versetCle.chapitre}}</td>
+      <td>{{versetCle.verset}}</td>
+     </tr>
+   </table>
+
+  <h1>sql-repeat</h1>
+  <table>
+    <tr>
+      <th>livre</th>
+      <th>chapitre</th>
+      <th>verset</th>
+     </tr>
+    <tr sql-repeat="versetCle in select livre, chapitre, verset from 'versets clés' where chapitre=1">
+      <td>{{versetCle.livre}}</td>
+      <td>{{versetCle.chapitre}}</td>
+      <td>{{versetCle.verset}}</td>
+     </tr>
+   </table> 
+
+ </body>
+
+<script src="components/angularjs/angular.min.js"></script>
+<script>
+var app = angular.module("sqlApp", []);
+app.controller("sqlController", function($scope, $http) {
+ });
+
+app.directive('sqlRepeat', ['$compile', '$http', function ($compile, $http) {
+  return {
+    restrict: 'A',
+    link: function($scope, element, attrs) {
+      var sql = attrs.sqlRepeat;
+      $http.get("/sql?get=" + sql)
+        .success(function(response) {
+          //$scope.rows = response.rows;
+         });
+      $scope.versetsCles = [
+        {
+          livre: 'Actes',
+          chapitre: 2,
+          verset: 17
+         },
+        {
+          livre: 'Actes',
+          chapitre: 2,
+          verset: 21
+         },
+        {
+          livre: 'Actes',
+          chapitre: 2,
+          verset: 28
+         }
+       ];
+
+      var newTr = element.clone();
+      newTr
+        .removeAttr('sql-repeat')
+        .attr('ng-repeat','versetCle in versetsCles');
+      element
+        .css('display','none')
+        .after(newTr);
+      $compile(newTr)($scope);
+     }
+   }
+ }]);
+</script>
