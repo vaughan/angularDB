@@ -10,7 +10,9 @@ db.load(dbFilePath);
 var url = require('url');
 app.use('/table', function(req, res){
   var url_parts = url.parse(req.url, true);
+  console.log('url_parts: ' + url_parts);
   var query = url_parts.query;
+  console.log('query: ' + query);
   var table = query['get'];
   console.log('table: ' + table);
   db.sqlite3_db.all(
@@ -29,14 +31,16 @@ app.use('/table', function(req, res){
 
 app.use('/sql', function(req, res){
   var sql = url.parse(req.url, true).query['get'];
-  console.log('sql: ' + req.body.sql);
-  /*db.sqlite3_db.run(req.body.sql, [], function(err) {
+  console.log('sql: ' + sql);
+  db.sqlite3_db.all(sql, function(err, rows) {
     if (err) {
       console.log('error: ' + err);
-      console.log(' - sql: ' + req.params.sql);
+      console.log(' - sql: ' + sql);
      }
-    res.json(err);
-   });*/
+    console.log(rows);
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify(rows, null, 3));
+   });
  });
 
 app.use('/tables', function(req, res) {

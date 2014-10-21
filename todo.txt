@@ -5,8 +5,16 @@
 - testing
 - dbObjects treeview
 - ng-grid editable
-- tab control for multiple simultanious views of dbObjects
+- tab control for viewing different dbObjects at the same time
 - other types of dbObjects
+  - query
+    - sql mode
+    - design mode: use ng-grid
+  - form
+  - code
+    - use tern for code completion and hints
+  - report
+    - use sql-repeat
 - tableDesign view
 
 Q: can I create a directive that contains sql? R:yes!

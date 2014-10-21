@@ -1,3 +1,4 @@
+<title>sql-repeat</title>
 <body ng-app="sqlApp" ng-controller="sqlController">
 
   <h1>ng-repeat</h1>
@@ -33,18 +34,7 @@
 <script src="components/angularjs/angular.min.js"></script>
 <script>
 var app = angular.module("sqlApp", []);
-app.controller("sqlController", function($scope, $http) {
- });
-
-app.directive('sqlRepeat', ['$compile', '$http', function ($compile, $http) {
-  return {
-    restrict: 'A',
-    link: function($scope, element, attrs) {
-      var sql = attrs.sqlRepeat;
-      $http.get("/sql?get=" + sql)
-        .success(function(response) {
-          //$scope.rows = response.rows;
-         });
+app.controller("sqlController", function($scope) {
       $scope.versetsCles = [
         {
           livre: 'Actes',
@@ -62,15 +52,28 @@ app.directive('sqlRepeat', ['$compile', '$http', function ($compile, $http) {
           verset: 28
          }
        ];
+ });
 
+app.directive('sqlRepeat', ['$compile', '$http', function ($compile, $http) {
+  return {
+    restrict: 'A',
+    link: function(scope, element, attrs) {
+      var sqlRepeat = attrs.sqlRepeat;
+      var sqlRepeatParts = sqlRepeat.split('in');
+      var sql = sqlRepeatParts[1];
+      var repeatPronoun = sqlRepeatParts[0];     
+      $http.get("/sql?get=" + sql)
+        .success(function(response) {
+          scope.rows = response;
+         });
       var newTr = element.clone();
       newTr
         .removeAttr('sql-repeat')
-        .attr('ng-repeat','versetCle in versetsCles');
+        .attr('ng-repeat', repeatPronoun + ' in rows');
       element
         .css('display','none')
         .after(newTr);
-      $compile(newTr)($scope);
+      $compile(newTr)(scope);
      }
    }
  }]);
