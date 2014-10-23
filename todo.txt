@@ -1,5 +1,7 @@
-- sql-repeat
-- ng-grid
+d- sql-repeat
+- ui-grid
+  d- add ui-grid
+  - modify column widths
 - late-loading?
 - node-webkit
 - testing

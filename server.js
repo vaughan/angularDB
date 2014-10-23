@@ -18,13 +18,16 @@ app.use('/table', function(req, res){
   db.sqlite3_db.all(
     "select rowid, * from '" + table + "'", 
     function(err,rows) {
-      var tableData = {
-        table: table,
-        rows: rows
-       }
-      console.log(tableData);
-      res.setHeader('Content-Type', 'application/json');
-      res.end(JSON.stringify(tableData, null, 3));
+      db.tableFields(table, function(err2, fields) {
+        var tableData = {
+          table: table,
+          rows: rows,
+          fields: fields
+         }
+        console.log(tableData);
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify(tableData, null, 3));
+       });
      }
    );
  });

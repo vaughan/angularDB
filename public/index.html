@@ -1,9 +1,9 @@
 <html>
 <head>
-  <!--script src="components/angularjs/angular.min.js"></script>
-  <script src="components/angularjs/angular.min.js"></script-->
-  <script src="components/angularjs/angular.min.js"></script>
-  <LINK REL=StyleSheet HREF="css/style.css" TYPE="text/css" MEDIA=screen>
+  <link rel="styleSheet" href="components/angular-ui-grid/ui-grid.min.css"/>
+  <link rel="styleSheet" href="css/style.css"/>
+  <script src="components/angular/angular.min.js"></script>
+  <script src="components/angular-ui-grid/ui-grid.min.js"></script>
   <title>angularDB</title>
  </head>
 <body ng-app="dbApp" ng-controller="dbController">
@@ -14,29 +14,35 @@
    </div>
   <div id=content>
     <h3>{{tableName}}</h3>
-    <table>
-      <tr>
-        <th ng-repeat="(column, value) in rows[0]">{{column}}</th>
-       </tr>
-      <tr ng-repeat="row in rows">
-         <td ng-repeat="(key, value) in row">{{value}}</td>
-        </tr>
-     </table>
+    <div ui-grid="gridOptions" class="grid"></div>
    </div>
  </body>
 <script>
-var app = angular.module("dbApp", []);
+var app = angular.module("dbApp", ['ui.grid']);
 app.filter('reverse', function() {
   return function(items) {
     return items.slice().reverse();
   };
  });
 app.controller("dbController", function($scope, $http) {
+  $scope.columns = [{ field: 'name' }, { field: 'gender' }];
+  $scope.gridOptions = {
+    columnDefs: $scope.columns
+   };	
   $scope.openTable = function(table) {
     $http.get("/table?get=" + table)
       .success(function(response) {
-        $scope.rows = response.rows;
         $scope.tableName = response.table;
+        /*var columns = Object.keys(response.rows[0]).map(
+          function(x) {
+   	        return {'field':x};
+		   }
+		 );*/
+        $scope.columns.splice(0,$scope.columns.length);
+        response.fields.forEach(function(field) {
+		  $scope.columns.push(field);
+	     });
+        $scope.gridOptions.data = response.rows;
        });
    };
   $scope.getTables = function() {
