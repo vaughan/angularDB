@@ -6,19 +6,19 @@
   <script src="components/angular-ui-grid/ui-grid.min.js"></script>
   <title>angularDB</title>
  </head>
-<body ng-app="dbApp" ng-controller="dbController">
-  <div id=dbObjects>
-    <li>
-      <ul ng-repeat="table in tables" ng-click="openTable(table);">{{table}}</ul>
-     </li>
-   </div>
-  <div id=content>
-    <h3>{{tableName}}</h3>
-    <div ui-grid="gridOptions" class="grid"></div>
-   </div>
- </body>
+ <body ng-app="dbApp" ng-controller="dbController">
+   <div id=dbObjects>
+     <li>
+       <ul ng-repeat="table in tables" ng-click="openTable(table);">{{table}}</ul>
+      </li>
+    </div>
+   <div id=content>
+     <h3>{{tableName}}</h3>
+     <div ui-grid="gridOptions" class="grid" ui-grid-resize-columns></div>
+    </div>
+  </body>
 <script>
-var app = angular.module("dbApp", ['ui.grid']);
+var app = angular.module("dbApp", ['ui.grid','ui.grid.resizeColumns']);
 app.filter('reverse', function() {
   return function(items) {
     return items.slice().reverse();

@@ -1,7 +1,13 @@
 d- sql-repeat
 - ui-grid
   d- add ui-grid
-  - modify column widths
+  d- modify column widths
+  - edit data
+    - trap editting events
+    - add new rows
+    - show behaviour with icons
+  - tableDesign view
+  - query design view (QBE style)
 - late-loading?
 - node-webkit
 - testing
