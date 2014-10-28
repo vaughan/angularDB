@@ -14,11 +14,11 @@
     </div>
    <div id=content>
      <h3>{{tableName}}</h3>
-     <div ui-grid="gridOptions" class="grid" ui-grid-resize-columns></div>
+     <div ui-grid="gridOptions" class="grid" ui-grid-edit ui-grid-resize-columns></div>
     </div>
   </body>
 <script>
-var app = angular.module("dbApp", ['ui.grid','ui.grid.resizeColumns']);
+var app = angular.module("dbApp", ['ui.grid','ui.grid.edit','ui.grid.resizeColumns']);
 app.filter('reverse', function() {
   return function(items) {
     return items.slice().reverse();
@@ -28,16 +28,17 @@ app.controller("dbController", function($scope, $http) {
   $scope.columns = [{ field: 'name' }, { field: 'gender' }];
   $scope.gridOptions = {
     columnDefs: $scope.columns
-   };	
+   };
+  $scope.gridOptions.onRegisterApi = function(gridApi){
+    $scope.gridApi = gridApi;
+    gridApi.edit.on.afterCellEdit($scope,function(rowEntity, colDef, newValue, oldValue){
+      alert('edited row id:' + rowEntity.id + ' Column:' + colDef.name + ' newValue:' + newValue + ' oldValue:' + oldValue);
+     });
+   };   
   $scope.openTable = function(table) {
     $http.get("/table?get=" + table)
       .success(function(response) {
         $scope.tableName = response.table;
-        /*var columns = Object.keys(response.rows[0]).map(
-          function(x) {
-   	        return {'field':x};
-		   }
-		 );*/
         $scope.columns.splice(0,$scope.columns.length);
         response.fields.forEach(function(field) {
 		  $scope.columns.push(field);

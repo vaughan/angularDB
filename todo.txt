@@ -4,9 +4,11 @@ d- sql-repeat
   d- modify column widths
   - edit data
     - trap editting events
+    - communicate with server to alter data
     - add new rows
     - show behaviour with icons
   - tableDesign view
+  - add checkboxes and drop-down textboxes to column types to enable boolean fields and lookup fields with row-sources
   - query design view (QBE style)
 - late-loading?
 - node-webkit
@@ -38,3 +40,6 @@ Q: can I create a directive that contains sql? R:yes!
   Q: how can implicit references to services infer what they are based on their variable name?  Is it actually possible in javascript to detect the
     string value of a function paramater in it's definition and not only it's order in the parameter list?
     R: yes this is possible using the «arguments» : it's just a non-typical way of thinking of function definitions that throws me for a loop   
+Q: ui grid
+- I notice in the docs there is stable and non-stable: is there a stable version available (ie. from bowser?)
+- colDef.type = number, date ... this appears to change the control: spinner for numbers
