@@ -14,26 +14,52 @@
     </div>
    <div id=content>
      <h3>{{tableName}}</h3>
-     <div ui-grid="gridOptions" class="grid" ui-grid-edit ui-grid-resize-columns></div>
+     <div ui-grid="gridOptions" class="grid" ui-grid-edit ui-grid-row-edit ui-grid-resize-columns ui-grid-cellNav></div>
     </div>
   </body>
 <script>
-var app = angular.module("dbApp", ['ui.grid','ui.grid.edit','ui.grid.resizeColumns']);
+var app = angular.module("dbApp", ['ui.grid','ui.grid.edit','ui.grid.rowEdit','ui.grid.resizeColumns','ui.grid.cellNav']);
 app.filter('reverse', function() {
   return function(items) {
     return items.slice().reverse();
   };
  });
-app.controller("dbController", function($scope, $http) {
+app.controller("dbController", ['$scope', '$http', '$q', '$timeout', function($scope, $http, $q, $timeout) {
   $scope.columns = [{ field: 'name' }, { field: 'gender' }];
   $scope.gridOptions = {
     columnDefs: $scope.columns
    };
+  $scope.saveRow = function( rowEntity ) {
+	  alert(JSON.stringify(rowEntity));
+      // create a fake promise - normally you'd use the promise returned by $http or $resource
+      var promise = $q.defer();
+      $scope.gridApi.rowEdit.setSavePromise( $scope.gridApi.grid, rowEntity, promise.promise );
+      $timeout(function() {
+        promise.resolve();
+       });
+     };
   $scope.gridOptions.onRegisterApi = function(gridApi){
     $scope.gridApi = gridApi;
-    gridApi.edit.on.afterCellEdit($scope,function(rowEntity, colDef, newValue, oldValue){
-      alert('edited row id:' + rowEntity.id + ' Column:' + colDef.name + ' newValue:' + newValue + ' oldValue:' + oldValue);
-     });
+    gridApi.rowEdit.on.saveRow($scope, $scope.saveRow);
+    /*gridApi.edit.on.afterCellEdit($scope,function(rowEntity, colDef, newValue, oldValue){
+      //alert('edited row id:' + rowEntity.rowid + ' Column:' + colDef.name + ' newValue:' + newValue + ' oldValue:' + oldValue);
+      alert(rowEntity[colDef.name]);
+
+      var sql = "update '" + $scope.tableName + "' set ";
+      sql += Object.keys(changes).map(function(field) {
+        return field + "='" + changes[field] + "'";
+       }).join(", ");
+
+      //where
+      sql += " where rowid=" + $(row).attr('id') + " ";
+      vsqlite.execSQL(
+        sql,
+        function(data) {
+          $(savePoint).fadeOut("slow");
+         }
+       );
+      
+     });*/
    };   
   $scope.openTable = function(table) {
     $http.get("/table?get=" + table)
@@ -43,6 +69,7 @@ app.controller("dbController", function($scope, $http) {
         response.fields.forEach(function(field) {
 		  $scope.columns.push(field);
 	     });
+	    //alert(JSON.stringify(response.rows));
         $scope.gridOptions.data = response.rows;
        });
    };
@@ -53,7 +80,7 @@ app.controller("dbController", function($scope, $http) {
        });    
    };
   $scope.getTables();
- });
+ }]);
 </script>
 
 </html>

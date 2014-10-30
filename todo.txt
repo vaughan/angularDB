@@ -3,7 +3,15 @@ d- sql-repeat
   d- add ui-grid
   d- modify column widths
   - edit data
-    - trap editting events
+    d- trap editting events
+    - trap row-edit event
+    ?- alter row-edit feature so it is activated upon switching rows rather than after 2 second interval without editing
+      ?- event changeRow(isChanged, row[field]['oldValue'|'newValue']) -> focus moves to a new row or away from the grid
+    - focus on top left cell by default
+    - changes to grid behavior
+      ?- enter key to lanuch editor
+      - when in editor left and right arrow keys allow moving to edit text
+      ?- when exiting editor with enter key, remain in same cell but exit editor
     - communicate with server to alter data
     - add new rows
     - show behaviour with icons
@@ -43,3 +51,4 @@ Q: can I create a directive that contains sql? R:yes!
 Q: ui grid
 - I notice in the docs there is stable and non-stable: is there a stable version available (ie. from bowser?)
 - colDef.type = number, date ... this appears to change the control: spinner for numbers
+- why does disabling angular-touch.js cause error: 
