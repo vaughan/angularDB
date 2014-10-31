@@ -30,36 +30,41 @@ app.controller("dbController", ['$scope', '$http', '$q', '$timeout', function($s
     columnDefs: $scope.columns
    };
   $scope.saveRow = function( rowEntity ) {
-	  alert(JSON.stringify(rowEntity));
-      // create a fake promise - normally you'd use the promise returned by $http or $resource
-      var promise = $q.defer();
-      $scope.gridApi.rowEdit.setSavePromise( $scope.gridApi.grid, rowEntity, promise.promise );
-      $timeout(function() {
-        promise.resolve();
-       });
+      //sql update
+      var sql = "update '" + $scope.tableName + "' set ";
+      var fields = Object.keys(rowEntity);
+      //delete array elements that are not table fields to be updated: rowid and $$hashKey
+      var deleteIndex = fields.indexOf('rowid');
+      fields.splice(deleteIndex, 1);
+	  deleteIndex = fields.indexOf('$$hashKey');
+      fields.splice(deleteIndex, 1);
+      
+      sql += fields.map(function(field) {
+        return field + "='" + rowEntity[field] + "'";
+       }).join(", ");
+      sql += " where rowid = " + rowEntity['rowid']; 
+
+      var sqlUpdate = $http.get("/sql?get=" + sql);
+      var defer = $q.defer();
+      $scope.gridApi.rowEdit.setSavePromise( $scope.gridApi.grid, rowEntity, defer.promise );
+      sqlUpdate.then(
+        function(payload) {
+          if (payload.data.result === 'success') {
+            defer.resolve();
+           } else {
+            alert('unwanted http response: ' + JSON.stringify(payload));
+            defer.reject(payload);
+           }
+         },
+        function(err) {
+          alert('http err: ' + JSON.stringify(err));
+          defer.reject(err);
+         }
+       );
      };
   $scope.gridOptions.onRegisterApi = function(gridApi){
     $scope.gridApi = gridApi;
     gridApi.rowEdit.on.saveRow($scope, $scope.saveRow);
-    /*gridApi.edit.on.afterCellEdit($scope,function(rowEntity, colDef, newValue, oldValue){
-      //alert('edited row id:' + rowEntity.rowid + ' Column:' + colDef.name + ' newValue:' + newValue + ' oldValue:' + oldValue);
-      alert(rowEntity[colDef.name]);
-
-      var sql = "update '" + $scope.tableName + "' set ";
-      sql += Object.keys(changes).map(function(field) {
-        return field + "='" + changes[field] + "'";
-       }).join(", ");
-
-      //where
-      sql += " where rowid=" + $(row).attr('id') + " ";
-      vsqlite.execSQL(
-        sql,
-        function(data) {
-          $(savePoint).fadeOut("slow");
-         }
-       );
-      
-     });*/
    };   
   $scope.openTable = function(table) {
     $http.get("/table?get=" + table)

@@ -4,17 +4,19 @@ d- sql-repeat
   d- modify column widths
   - edit data
     d- trap editting events
-    - trap row-edit event
+    d- trap row-edit event
     ?- alter row-edit feature so it is activated upon switching rows rather than after 2 second interval without editing
       ?- event changeRow(isChanged, row[field]['oldValue'|'newValue']) -> focus moves to a new row or away from the grid
-    - focus on top left cell by default
-    - changes to grid behavior
+    l- focus on top left cell by default
+    l- changes to grid behavior
       ?- enter key to lanuch editor
-      - when in editor left and right arrow keys allow moving to edit text
+      l- when in editor left and right arrow keys allow moving to edit text
       ?- when exiting editor with enter key, remain in same cell but exit editor
-    - communicate with server to alter data
+    d- communicate with server to alter data
     - add new rows
-    - show behaviour with icons
+      - mechanism for visually adding new row
+      - enable saveRow() to deal with inserting new rows
+    l- show behaviour with icons
   - tableDesign view
   - add checkboxes and drop-down textboxes to column types to enable boolean fields and lookup fields with row-sources
   - query design view (QBE style)
