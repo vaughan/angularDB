@@ -13,10 +13,12 @@ d- sql-repeat
       l- when in editor left and right arrow keys allow moving to edit text
       ?- when exiting editor with enter key, remain in same cell but exit editor
     d- communicate with server to alter data
-    - add new rows
-      - mechanism for visually adding new row
-      - enable saveRow() to deal with inserting new rows
-    l- show behaviour with icons
+    d- add new rows
+      d- mechanism for visually adding new row
+        d- add empty row to bottom
+      d- enable saveRow() to deal with inserting new rows
+    l- show behaviour with icons in recordselector
+      l- insert recordselector
   - tableDesign view
   - add checkboxes and drop-down textboxes to column types to enable boolean fields and lookup fields with row-sources
   - query design view (QBE style)

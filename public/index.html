@@ -29,39 +29,50 @@ app.controller("dbController", ['$scope', '$http', '$q', '$timeout', function($s
   $scope.gridOptions = {
     columnDefs: $scope.columns
    };
-  $scope.saveRow = function( rowEntity ) {
-      //sql update
-      var sql = "update '" + $scope.tableName + "' set ";
-      var fields = Object.keys(rowEntity);
+  $scope.saveRow = function(row) {
+    var sql;
+    var fields = Object.keys(row);
+    var deleteIndex = fields.indexOf('$$hashKey'); //delete array element that is not field
+    fields.splice(deleteIndex, 1);
+
+    if (row.rowid) { //sql update
+      sql = "update '" + $scope.tableName + "' set ";
       //delete array elements that are not table fields to be updated: rowid and $$hashKey
-      var deleteIndex = fields.indexOf('rowid');
-      fields.splice(deleteIndex, 1);
-	  deleteIndex = fields.indexOf('$$hashKey');
+      deleteIndex = fields.indexOf('rowid');
       fields.splice(deleteIndex, 1);
       
       sql += fields.map(function(field) {
-        return field + "='" + rowEntity[field] + "'";
+        return field + "='" + row[field] + "'";
        }).join(", ");
-      sql += " where rowid = " + rowEntity['rowid']; 
+      sql += " where rowid = " + row['rowid']; 
+     } else { //sql insert
+      sql = "insert into '" + $scope.tableName + "' ( ";
+      sql += "'" + fields.join("', '") + "'";
+      sql += ") values (";
+      sql += fields.map(function(field) {
+        return "'" + row[field] + "'";
+       }).join(", ");
+      sql += ");";
+     }
 
-      var sqlUpdate = $http.get("/sql?get=" + sql);
-      var defer = $q.defer();
-      $scope.gridApi.rowEdit.setSavePromise( $scope.gridApi.grid, rowEntity, defer.promise );
-      sqlUpdate.then(
-        function(payload) {
-          if (payload.data.result === 'success') {
-            defer.resolve();
-           } else {
-            alert('unwanted http response: ' + JSON.stringify(payload));
-            defer.reject(payload);
-           }
-         },
-        function(err) {
-          alert('http err: ' + JSON.stringify(err));
-          defer.reject(err);
+    var sendSql = $http.get("/sql?get=" + sql);
+    var defer = $q.defer();
+    $scope.gridApi.rowEdit.setSavePromise( $scope.gridApi.grid, row, defer.promise );
+    sendSql.then(
+      function(payload) {
+        if (payload.data.result === 'success') {
+          defer.resolve();
+         } else {
+          alert('unwanted http response: ' + JSON.stringify(payload));
+          defer.reject(payload);
          }
-       );
-     };
+       },
+      function(err) {
+        alert('http err: ' + JSON.stringify(err));
+        defer.reject(err);
+       }
+     );
+   };
   $scope.gridOptions.onRegisterApi = function(gridApi){
     $scope.gridApi = gridApi;
     gridApi.rowEdit.on.saveRow($scope, $scope.saveRow);
@@ -74,8 +85,14 @@ app.controller("dbController", ['$scope', '$http', '$q', '$timeout', function($s
         response.fields.forEach(function(field) {
 		  $scope.columns.push(field);
 	     });
-	    //alert(JSON.stringify(response.rows));
         $scope.gridOptions.data = response.rows;
+
+        //add blank row for new records
+        var row = {};
+        response.fields.forEach(function(field) {
+          row[field['name']] = null;
+         });
+        $scope.gridOptions.data.push(row);
        });
    };
   $scope.getTables = function() {
