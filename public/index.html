@@ -76,12 +76,17 @@ app.controller("dbController", ['$scope', '$http', '$q', '$timeout', function($s
   $scope.gridOptions.onRegisterApi = function(gridApi){
     $scope.gridApi = gridApi;
     gridApi.rowEdit.on.saveRow($scope, $scope.saveRow);
+    gridApi.core.addRowHeaderColumn( { name: 'rowHeaderCol', displayName: '', width: 30} );    
    };   
   $scope.openTable = function(table) {
     $http.get("/table?get=" + table)
       .success(function(response) {
         $scope.tableName = response.table;
         $scope.columns.splice(0,$scope.columns.length);
+        /*$scope.columns.push({
+          field: '*',
+          cellClass: 'recordSelector'
+         });*/
         response.fields.forEach(function(field) {
 		  $scope.columns.push(field);
 	     });

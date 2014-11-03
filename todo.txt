@@ -17,22 +17,26 @@ d- sql-repeat
       d- mechanism for visually adding new row
         d- add empty row to bottom
       d- enable saveRow() to deal with inserting new rows
-    l- show behaviour with icons in recordselector
-      l- insert recordselector
+    - show behaviour with icons in recordselector
+      d- insert recordselector
+        R: row header column
+      - delete records
   - tableDesign view
   - add checkboxes and drop-down textboxes to column types to enable boolean fields and lookup fields with row-sources
   - query design view (QBE style)
-- late-loading?
 - node-webkit
 - testing
 - dbObjects treeview
-- ng-grid editable
 - tab control for viewing different dbObjects at the same time
+- late-loading?
 - other types of dbObjects
   - query
     - sql mode
     - design mode: use ng-grid
   - form
+    - html mode
+    - jade mode
+    - html designer
   - code
     - use tern for code completion and hints
   - report

@@ -12,3 +12,7 @@
 .ui-grid-header-cell{
 height: 30px
 }
+.recordSelector {
+  background-color: lightgrey;
+  width: 16px;
+ }
