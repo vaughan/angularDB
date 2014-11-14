@@ -20,6 +20,16 @@ d- sql-repeat
     - show behaviour with icons in recordselector
       d- insert recordselector
         R: row header column
+      d- add icons to recordSelector via template
+      - hide/show icons according to row state (ie. new record? current record? selected record? record being editted?)
+        - why does the gridApi.cellnav.navigate event not return anything related to the row?  How can I debug this?  I can't find the info in batarang
+        - is there any way I can determine these properties from css (ie. newRecord, activeRecord, selectedRecord, editMode)?
+        - is there any way I can obtain the dom object of the cell from the cellNav.navigate event in order to set it's class?
+        - how does the cellNav feature change highlight the currently active cell?
+          - could I use the same mechanism to highlight the currently active row?
+      - put an ng-click in the rowHeader for highlighting the row
+        - adding ng-click via cellTemplate in gridApi.addRowHeaderColumn() is not compiled. onClick works (predictably)
+      - put an ng-hide in the rowHeader for showing the newRecord icon
       - delete records
   - tableDesign view
   - add checkboxes and drop-down textboxes to column types to enable boolean fields and lookup fields with row-sources
