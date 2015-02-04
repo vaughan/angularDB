@@ -1,0 +1,21 @@
+<title>template expanding directive</title>
+<div ng-app="docsSimpleDirective" ng-controller="Controller">
+  <div my-customer>
+    Will this text be erased?  Indeed it will!
+   </div>
+</div>
+<script src="components/angularjs/angular.min.js"></script>
+<script>
+angular.module('docsSimpleDirective', [])
+  .controller('Controller', ['$scope', function($scope) {
+    $scope.customer = {
+      name: 'Naomi',
+      address: '1600 Amphitheatre'
+    };
+  }])
+  .directive('myCustomer', function() {
+    return {
+      template: 'Name: {{customer.name}} Address: {{customer.address}}'
+    };
+  });
+ </script>

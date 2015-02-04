@@ -36,7 +36,7 @@ app.use('/sql', function(req, res){
   var sql = url.parse(req.url, true).query['get'];
   console.log('sql: ' + sql);
   res.setHeader('Content-Type', 'application/json');
-  if (sql.match('^select')) { //select queries
+  if (sql.match(/^select/i)) { //select queries
     db.sqlite3_db.all(sql, function(err, rows) {
       if (err) {
         console.log('error: ' + err);

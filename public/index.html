@@ -1,107 +1,38 @@
 <html>
 <head>
-  <link rel="styleSheet" href="components/angular-ui-grid/ui-grid.min.css"/>
   <link rel="styleSheet" href="css/style.css"/>
-  <script src="components/angular/angular.min.js"></script>
-  <script src="components/angular-ui-grid/ui-grid.min.js"></script>
+  <link rel="styleSheet" href="css/list.css"/>
+  <script src="components/jquery/dist/jquery.min.js"></script>
+  <script src="components/angular/angular.js"></script>
+  <script src="js/sqlRepeat.js"></script>
+  <script src="js/sbList.js"></script>
   <title>angularDB</title>
  </head>
  <body ng-app="dbApp" ng-controller="dbController">
+   <div id=display></div>
+   <input type=button value="load content" ng-click="partial.url='_tableView.html'"></input>
    <div id=dbObjects>
-     <li>
-       <ul ng-repeat="table in tables" ng-click="openTable(table);">{{table}}</ul>
-      </li>
+     <ol sb-list>
+       <li ng-repeat="table in tables" repeat-last>{{table}}</ul>
+      </ol>
     </div>
-   <div id=content>
-     <h3>{{tableName}}</h3> {{msg}}
-     <div ui-grid="gridOptions" class="grid" ng-kepress="onKeyPress()" ui-grid-edit ui-grid-row-edit ui-grid-resize-columns ui-grid-cellnav ui-grid-selection></div>
+   <div id=content ng-include="partial.url">
     </div>
   </body>
 <script>
-var app = angular.module("dbApp", ['ui.grid','ui.grid.edit','ui.grid.rowEdit','ui.grid.resizeColumns','ui.grid.cellNav','ui.grid.selection']);
-app.controller("dbController", ['$scope', '$http', '$q', '$timeout', '$compile', function($scope, $http, $q, $timeout, $compile) {
-  $scope.columns = [];
-  $scope.gridOptions = {
-    columnDefs: $scope.columns
-   };   
-  $scope.saveRow = function(row) {
-    var sql;
-    var fields = Object.keys(row);
-    var deleteIndex = fields.indexOf('$$hashKey'); //delete array element that is not field
-    fields.splice(deleteIndex, 1);
-
-    if (row.rowid) { //sql update
-      sql = "update '" + $scope.tableName + "' set ";
-      //delete array elements that are not table fields to be updated: rowid and $$hashKey
-      deleteIndex = fields.indexOf('rowid');
-      fields.splice(deleteIndex, 1);
-      
-      sql += fields.map(function(field) {
-        return field + "='" + row[field] + "'";
-       }).join(", ");
-      sql += " where rowid = " + row['rowid']; 
-     } else { //sql insert
-      sql = "insert into '" + $scope.tableName + "' ( ";
-      sql += "'" + fields.join("', '") + "'";
-      sql += ") values (";
-      sql += fields.map(function(field) {
-        return "'" + row[field] + "'";
-       }).join(", ");
-      sql += ");";
-     }
-    var sendSql = $http.get("/sql?get=" + sql);
-    var defer = $q.defer();
-    $scope.gridApi.rowEdit.setSavePromise( $scope.gridApi.grid, row, defer.promise );
-    sendSql.then(
-      function(payload) {
-        if (payload.data.result === 'success') {
-          defer.resolve();
-         } else {
-          alert('unwanted http response: ' + JSON.stringify(payload));
-          defer.reject(payload);
-         }
-       },
-      function(err) {
-        alert('http err: ' + JSON.stringify(err));
-        defer.reject(err);
-       }
-     );
-   };
-  $scope.gridOptions.onRegisterApi = function(gridApi){
-    $scope.gridApi = gridApi;
-    gridApi.rowEdit.on.saveRow($scope, $scope.saveRow);
-    /*gridApi.cellNav.on.navigate($scope,function(newRowCol, oldRowCol){
-      //var rowCol = {row: newRowCol.row.index, col:newRowCol.col.colDef.name};
-      var rowCol = {col:newRowCol.col.colDef.name, row: newRowCol.row.index};
-      var msg = 'New RowCol is ' + angular.toJson(rowCol);
-      if(oldRowCol){
-         rowCol = {row: oldRowCol.row.index, col:oldRowCol.col.colDef.name};
-         msg += ' Old RowCol is ' + angular.toJson(rowCol);
-      }
-      $scope.msg = msg;
-     });*/
-   };
-  $scope.onKeyPress = function() {
-    alert('keypress!');
+function alert(text) {
+  $('#display').text($('#display').text() + '|' + text);
+ }
+var app = angular.module("dbApp", ['sbList']);
+app.controller("dbController", ['$scope', '$http', function($scope, $http) {
+  $scope.$on('openItem', function(e, item) {
+    //$scope.openTable(item);
+    $scope.viewTable(item);
+    //alert('open table ' + item);
+   });
+  $scope.getSelectedRows = function() {
+    alert('get selected rows: ' + JSON.stringify($scope.gridApi.selection.getSelectedRows()));
    }
-  $scope.openTable = function(table) {
-    $http.get("/table?get=" + table)
-      .success(function(response) {
-        $scope.tableName = response.table;
-        $scope.columns.splice(0,$scope.columns.length);
-        response.fields.forEach(function(field) {
-		  $scope.columns.push(field);
-	     });
-        $scope.gridOptions.data = response.rows;
-
-        //add blank row for new records
-        var row = {};
-        response.fields.forEach(function(field) {
-          row[field['name']] = null;
-         });
-        $scope.gridOptions.data.push(row);
-       });
-   };
   $scope.getTables = function() {
     $http.get("/tables")
       .success(function(response) {
@@ -109,6 +40,12 @@ app.controller("dbController", ['$scope', '$http', '$q', '$timeout', '$compile',
        });    
    };
   $scope.getTables();
+  $scope.viewTable = function(table) {
+    $http.get("/_tableView.html")
+      .success(function(response) {
+        $scope.tables = response;
+       });        
+   }
  }]);
 </script>
 

@@ -1,0 +1,59 @@
+<html>
+<head>
+  <link rel="styleSheet" href="css/list.css"/>
+
+ </head>
+<body ng-app='testSbList' ng-controller="testSbListCtr">
+  <div id=display></div>
+  
+  <br>sb-list:
+  <ol id=sbListDemo sb-list>
+    <li>first</li>
+    <li>second</li>
+    <li>third</li>
+    <li>fourth</li>
+    <li>fifth</li>
+    <li>sixth</li>
+   </ol>
+
+  <!--sbList row-source="table in SELECT name FROM main.sqlite_master WHERE type='table'"/-->
+
+  <br>sql-repeat inside sb-list:
+  <ol sb-list>
+    <li sql-repeat="table in SELECT name FROM main.sqlite_master WHERE type='table'" repeat-last>{{table.name}}</li>
+   </ol>
+
+<script src="components/angularjs/angular.js"></script>
+<script src="js/sqlRepeat.js"></script>
+<script src="components/jquery/dist/jquery.min.js"></script>
+<script src="js/sbList.js"></script>
+
+<script>
+  function alert(text) {
+    $('#display').text($('#display').text() + '|' + text);
+   }
+  angular.module("testSbList", ['sbList'])
+    .controller("testSbListCtr", function($scope) {
+      $scope.$on('openItem', function(e, item) {
+        alert('openItem: ' + item);
+       })
+      $scope.$on('afterInsert', function(e, item) {
+        alert('inserted ' + item);
+       });
+      $scope.$on('deleteItem', function(e, item) {
+        alert('deleted ' + item);
+       });
+      $scope.$on('editItem', function(e, oldVal, newVal) {
+        alert('editItem: ' + oldVal + ' -> ' + newVal);
+       })
+     });
+
+
+  /*$('ol.thisOneCounts').list()
+    .on('openItem', function(e, item) {
+      alert('openItem: ' + item);
+     })
+
+   $('#sbListDemo').focus();*/
+ </script>
+</body></html>

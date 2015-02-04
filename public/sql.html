@@ -32,29 +32,30 @@
  </body>
 
 <script src="components/angularjs/angular.min.js"></script>
+<script src="js/sqlRepeat.js"></script>
 <script>
-var app = angular.module("sqlApp", []);
-app.controller("sqlController", function($scope) {
-      $scope.versetsCles = [
-        {
-          livre: 'Actes',
-          chapitre: 2,
-          verset: 17
-         },
-        {
-          livre: 'Actes',
-          chapitre: 2,
-          verset: 21
-         },
-        {
-          livre: 'Actes',
-          chapitre: 2,
-          verset: 28
-         }
-       ];
- });
+angular.module("sqlApp")
+  .controller("sqlController", function($scope) {
+    $scope.versetsCles = [
+      {
+        livre: 'Actes',
+        chapitre: 2,
+        verset: 17
+       },
+      {
+        livre: 'Actes',
+        chapitre: 2,
+        verset: 21
+       },
+      {
+        livre: 'Actes',
+        chapitre: 2,
+        verset: 28
+       }
+     ];
+   });
 
-app.directive('sqlRepeat', ['$compile', '$http', function ($compile, $http) {
+/*app.directive('sqlRepeat', ['$compile', '$http', function ($compile, $http) {
   return {
     restrict: 'A',
     link: function(scope, element, attrs) {
@@ -76,5 +77,5 @@ app.directive('sqlRepeat', ['$compile', '$http', function ($compile, $http) {
       $compile(newTr)(scope);
      }
    }
- }]);
+ }]);*/
 </script>

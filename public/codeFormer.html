@@ -1,0 +1,36 @@
+<head>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>
+  <script>
+    var App = angular.module('App', []);
+
+    App.directive('angular', function() {
+        return {
+            restrict: 'ECMA',
+            link: function(scope, element, attrs) {
+                var img = document.createElement('img');
+                img.src = 'http://goo.gl/ceZGf';
+            
+            
+                // directives as comment
+                if (element[0].nodeType === 8) {
+                    element.replaceWith(img);
+                } else {
+                    element[0].appendChild(img);            
+                }
+            }
+        };
+    });
+   </script>
+  <style>
+    img {
+        float: left;
+        margin-right: 20px;
+    }
+   </style>
+ </head>
+<body ng-app='App'>
+  <div angular></div>
+  <div class="angular"></div>
+  <angular></angular>
+  <!-- directive: angular -->
+ </body>

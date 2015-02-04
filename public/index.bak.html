@@ -1,0 +1,53 @@
+<html>
+<head>
+  <link rel="styleSheet" href="components/ng-grid/ng-grid.min.css"/>
+  <link rel="styleSheet" href="css/style.css"/>
+  <script src="components/angularjs/angular.min.js"></script>
+  <script src="components/ng-grid/ng-grid-2.0.13.min.js"></script>
+  <title>angularDB</title>
+ </head>
+<body ng-app="dbApp" ng-controller="dbController">
+  <div id=dbObjects>
+    <li>
+      <ul ng-repeat="table in tables" ng-click="openTable(table);">{{table}}</ul>
+     </li>
+   </div>
+  <div id=content>
+    <h3>{{tableName}}</h3>
+    <table>
+      <tr>
+        <th ng-repeat="(column, value) in rows[0]">{{column}}</th>
+       </tr>
+      <tr ng-repeat="row in rows">
+         <td ng-repeat="(key, value) in row">{{value}}</td>
+        </tr>
+     </table>    
+    <div ui-grid="{ data: rows }" class="myGrid"></div>
+   </div>
+ </body>
+<script>
+var app = angular.module("dbApp", ['ui.grid']);
+app.filter('reverse', function() {
+  return function(items) {
+    return items.slice().reverse();
+  };
+ });
+app.controller("dbController", function($scope, $http) {
+  $scope.openTable = function(table) {
+    $http.get("/table?get=" + table)
+      .success(function(response) {
+        $scope.rows = response.rows;
+        $scope.tableName = response.table;
+       });
+   };
+  $scope.getTables = function() {
+    $http.get("/tables")
+      .success(function(response) {
+        $scope.tables = response;
+       });    
+   };
+  $scope.getTables();
+ });
+</script>
+
+</html>

@@ -9,19 +9,27 @@ d- sql-repeat
       ?- event changeRow(isChanged, row[field]['oldValue'|'newValue']) -> focus moves to a new row or away from the grid
     l- focus on top left cell by default
     l- changes to grid behavior
-      ?- enter key to lanuch editor
+      ?- enter key to launch editor
       l- when in editor left and right arrow keys allow moving to edit text
       ?- when exiting editor with enter key, remain in same cell but exit editor
-    d- communicate with server to alter data
+    d- communicate with server to alter data (edit rows)
     d- add new rows
       d- mechanism for visually adding new row
         d- add empty row to bottom
       d- enable saveRow() to deal with inserting new rows
-    - show behaviour with icons in recordselector
+    - delete rows
+      - trap delete keypress to delete rows that are checked off
+        d- read source code of navigation and rowEdit to see where key trapping happens
+        - external button to delete selected rows
+        - gridKeyTrapper.html to make my own directive keyTrapper that traps keys (like delete) from a basic grid
+        - create rowDelete directive from keyTrapper directive that depends on rowEdit directive and enables deletion of selected rows
+
+    ?- show behaviour with icons in recordselector
       d- insert recordselector
         R: row header column
       d- add icons to recordSelector via template
       - hide/show icons according to row state (ie. new record? current record? selected record? record being editted?)
+        note: I don't think I had discovered rowEdit yet when I wrote this
         - why does the gridApi.cellnav.navigate event not return anything related to the row?  How can I debug this?  I can't find the info in batarang
         - is there any way I can determine these properties from css (ie. newRecord, activeRecord, selectedRecord, editMode)?
         - is there any way I can obtain the dom object of the cell from the cellNav.navigate event in order to set it's class?
@@ -30,7 +38,6 @@ d- sql-repeat
       - put an ng-click in the rowHeader for highlighting the row
         - adding ng-click via cellTemplate in gridApi.addRowHeaderColumn() is not compiled. onClick works (predictably)
       - put an ng-hide in the rowHeader for showing the newRecord icon
-      - delete records
   - tableDesign view
   - add checkboxes and drop-down textboxes to column types to enable boolean fields and lookup fields with row-sources
   - query design view (QBE style)
@@ -42,16 +49,42 @@ d- sql-repeat
 - other types of dbObjects
   - query
     - sql mode
-    - design mode: use ng-grid
+    - design mode: use ui-grid
   - form
     - html mode
     - jade mode
-    - html designer
+    - html drag and drop designer with control pallet
   - code
     - use tern for code completion and hints
   - report
     - use sql-repeat
+    - use css with media type as print?
+    - use pdf engine?
 - tableDesign view
+
+- practical learning 20 jan 2015
+  - create <sbList> component based off of my jquery list plugin to practice making directives
+    d- use sql-repeat to create list of tables in an <ol></ol>
+      d- how to move sql-repeat directive out to a separate file
+    d- convert jquery.list.js to sbList directive
+    d- create row-source attribute for sbList ie: <sbList row-source="select name from main.sqlite_master where type='table'"></sbList>
+      - why does adding last-repeat attribute to only one directive enable other sbLists containing sql-repeats?  Hopefully this will not cause problems
+        in the future with pages having multiple sbLists
+    d- move sbList out to separate textfile
+    d- convert jquery events to angular.js events with $emit and $on
+    - use sbList in index.html to list tables and forms
+      d- load sbList into index.html
+      d- call openItem() from list event
+      - make a partial for tableView
+        - create _tableView.html that only provides what is inside the content pane of the old index.html
+        - create index.html that removes everything not necessary for the tableView content pane
+        Q: does cmdLoadContent load scripts too?  Do I need to do some gymnastics to get this to work (ie. the javascript/lazyload example)?
+           - hook up list.openItem to load the content
+           - get it 
+      - make a partial for dbObjects
+      - add icons to sbList from main app controller programmatically as done in vsqlite
+    
+  - create forms wizard to practice making a tabular data entry form from a table
 
 Q: can I create a directive that contains sql? R:yes!
   Q: sql.html: why is attr['sql-repeat'] null? how do I get the text value of sql-repeat?
@@ -70,3 +103,14 @@ Q: ui grid
 - I notice in the docs there is stable and non-stable: is there a stable version available (ie. from bowser?)
 - colDef.type = number, date ... this appears to change the control: spinner for numbers
 - why does disabling angular-touch.js cause error: 
+
+- apprentissage:
+  - angular.js making directives video
+  - compile angular.js from source
+  *- compile ui-grid from source
+  - try making my own ui-grid plugin
+  *- try modifications to selection and rowEdit plugins
+     - read selection and rowEdit plugin source
+  - finish angular.js tutorial
+
+

@@ -1,0 +1,96 @@
+<html>
+<head>
+  <link rel="styleSheet" href="components/angular-ui-grid/ui-grid.min.css"/>
+  <link rel="styleSheet" href="css/style.css"/>
+  <script src="components/angular/angular.min.js"></script>
+  <script src="components/angular-ui-grid/ui-grid.min.js"></script>
+  <title>angularDB</title>
+ </head>
+ <body ng-app="dbApp" ng-controller="dbController">
+   <div id=dbObjects>
+     <li>
+       <ul ng-repeat="table in tables" ng-click="openTable(table);">{{table}}</ul>
+      </li>
+    </div>
+   <div id=content>
+     <h3>{{tableName}}</h3> {{msg}}
+     <div ui-grid="gridOptions" key-trapper class="grid" ng-keypress="onKeyPress()" ></div>
+    </div>
+  </body>
+<script>
+var app = angular.module("dbApp", ['ui.grid']);
+app.controller("dbController", ['$scope', '$http', '$q', '$timeout', '$compile', function($scope, $http, $q, $timeout, $compile) {
+  $scope.columns = [];
+  $scope.gridOptions = {
+    columnDefs: $scope.columns
+   };   
+  $scope.gridOptions.onRegisterApi = function(gridApi){
+    $scope.gridApi = gridApi;
+   };
+  $scope.onKeyPress = function() {
+    alert('keypress!');
+   }
+  $scope.openTable = function(table) {
+    $http.get("/table?get=" + table)
+      .success(function(response) {
+        $scope.tableName = response.table;
+        $scope.columns.splice(0,$scope.columns.length);
+        response.fields.forEach(function(field) {
+		  $scope.columns.push(field);
+	     });
+        $scope.gridOptions.data = response.rows;
+
+        //add blank row for new records
+        var row = {};
+        response.fields.forEach(function(field) {
+          row[field['name']] = null;
+         });
+        $scope.gridOptions.data.push(row);
+       });
+   };
+  $scope.getTables = function() {
+    $http.get("/tables")
+      .success(function(response) {
+        $scope.tables = response;
+       });    
+   };
+  $scope.msg = function(message) {
+    alert(message);
+   }
+  $scope.getTables();
+ }]);
+
+app.directive('keyTrapper', ['$compile', '$http', function ($compile, $http) {
+   /*function (uiGridCellNavService, gridUtil, uiGridCellNavConstants) {
+     return {
+       priority: -150, // run after default uiGridCell directive and ui.grid.edit uiGridCell
+       restrict: 'A',
+       scope: false,
+       link: function ($scope, $elm, $attrs, uiGridCtrl) {
+         if (!$scope.col.colDef.allowCellFocus) {
+           return;
+         }
+       
+         setTabEnabled();
+       
+         $elm.on('keydown', function (evt) {
+           var direction = uiGridCellNavService.getDirection(evt);
+           if (direction === null) {
+             return true;
+           }*/
+
+  return {
+    priority: -150,
+    restrict: 'A',
+    require: '^uiGrid',
+    scope: false,
+    link: function(scope, element, attrs) {
+      element.on('keydown', function (evt) {
+        $scope.apply('msg("evt.keycode: " + evt.keyCode)');
+       });
+     }
+   }
+ }]);
+</script>
+
+</html>

@@ -1,0 +1,18 @@
+<body ng-app="myapp">
+  <div></div>
+ </body>
+<script src="components/angularjs/angular.min.js"></script>
+<script>
+myapp = angular.module("myapp", []);
+
+myapp.directive('div', function() {
+    var directive = {};
+
+    directive.restrict = 'E'; /* restrict this directive to elements */
+
+    directive.template = "My first directive: {{textToInsert}}";
+
+    return directive;
+});
+</script>
+
