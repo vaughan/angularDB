@@ -1,0 +1,14 @@
+ol.list li:hover {
+  background-color: yellow;
+ }
+ol.list li:focus {
+  background-color: lightblue;
+ }
+ol.list li.editing {
+  color: lightblue;
+  background-color: black;
+ }
+ol.list li.newItem {
+  color: lightblue;
+  background-color: black;
+ }
