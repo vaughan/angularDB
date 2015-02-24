@@ -16,6 +16,8 @@
   "dependencies": {
     "angularjs": "~1.3.0",
     "angular-ui-grid ": ">0",
-    "jquery": "~2.1.1"
+    "jquery": "~2.1.1",
+    "angularjs-helpers": "https://github.com/gillyb/angularjs-helpers.git",
+    "oclazyload": "https://github.com/ocombe/ocLazyLoad.git#~0.5.2"
   }
 }

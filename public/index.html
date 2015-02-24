@@ -4,49 +4,23 @@
   <link rel="styleSheet" href="css/list.css"/>
   <script src="components/jquery/dist/jquery.min.js"></script>
   <script src="components/angular/angular.js"></script>
+  <script src="components/oclazyload/dist/ocLazyLoad.js"></script>
   <script src="js/sqlRepeat.js"></script>
   <script src="js/sbList.js"></script>
+  <script src="js/scratchbase.js"></script>
+ 
   <title>angularDB</title>
  </head>
- <body ng-app="dbApp" ng-controller="dbController">
+ <body ng-app="sb.main" ng-controller="mainCtr">
    <div id=display></div>
-   <input type=button value="load content" ng-click="partial.url='_tableView.html'"></input>
+   <input type=button value="load table view in content" ng-click="loadContents('tableView')"></input>
+   <input type=button value="load table design in content" ng-click="content.url='_tableDesign.html'"></input>
    <div id=dbObjects>
      <ol sb-list>
-       <li ng-repeat="table in tables" repeat-last>{{table}}</ul>
+       <li ng-repeat="table in tables" repeat-last>{{table}}</li>
       </ol>
     </div>
-   <div id=content ng-include="partial.url">
+   <div id=content ng-include="content.url">
     </div>
   </body>
-<script>
-function alert(text) {
-  $('#display').text($('#display').text() + '|' + text);
- }
-var app = angular.module("dbApp", ['sbList']);
-app.controller("dbController", ['$scope', '$http', function($scope, $http) {
-  $scope.$on('openItem', function(e, item) {
-    //$scope.openTable(item);
-    $scope.viewTable(item);
-    //alert('open table ' + item);
-   });
-  $scope.getSelectedRows = function() {
-    alert('get selected rows: ' + JSON.stringify($scope.gridApi.selection.getSelectedRows()));
-   }
-  $scope.getTables = function() {
-    $http.get("/tables")
-      .success(function(response) {
-        $scope.tables = response;
-       });    
-   };
-  $scope.getTables();
-  $scope.viewTable = function(table) {
-    $http.get("/_tableView.html")
-      .success(function(response) {
-        $scope.tables = response;
-       });        
-   }
- }]);
-</script>
-
 </html>
