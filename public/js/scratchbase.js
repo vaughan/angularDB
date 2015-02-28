@@ -19,16 +19,16 @@ sb.config(['$compileProvider',function($compileProvider) {
         alert('componentName not in $scope.components');
        } else {
         var component = $scope.components[componentName];
-        $scope.content.url = component.url;
-        /*$ocLazyLoad.load({
-	  name: 'sb.tableView',
-	  files: ['js/tableView.js']
-         });*/
+           /*$ocLazyLoad.load({
+	     name: 'sb.tableView',
+	     files: ['js/tableView.js']
+            });*/
         $ocLazyLoad.load({
-	  name: component.module,
-	  files: component.js
+	      name: component.module,
+	      files: component.js
+         }).then(function() {
+          $scope.content.url = component.url;
          });
-        $scope.apply();
        }
      }
     $scope.$on('openItem', function(e, item) {

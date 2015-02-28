@@ -5,10 +5,10 @@
   padding-left: 10px;
   margin-right: 0;
  }
-.grid {
+/*.grid {
   width: 700px;
   height: 700px;
+ }*/
+.ui-grid-header {
+  height: 30px
  }
-.ui-grid-header-cell{
-height: 30px
-}

@@ -108,5 +108,5 @@ tvApp.controller("tableViewCtr", ['$scope', '$http', '$q', '$timeout', '$compile
         $scope.gridOptions.data.push(row);
        });
    };
-  $scope.openTable('classes des types');
+  $scope.openTable('classes');
  }]);
