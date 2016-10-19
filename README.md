@@ -5,5 +5,5 @@ To take a spin:
 
 ```
 npm install
-node
+node server.js
 ```
